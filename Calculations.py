@@ -1,30 +1,30 @@
 import numpy as np
 
 class Calculations:
-    def __init__(self, array, class_pos, classes):
-        self.q(array, class_pos, classes)
+    def __init__(self, array, classes, att_values):
+        self.q(array, classes, att_values)
 
-    def q(self, array, class_pos, classes):
+    def q(self, array, classes, att_values):
         count = [0] * len(classes)
         q = [0] * len(classes)
         n = len(array)
         for i in range(n):
             for j in range(len(classes)):
-                if array[i][class_pos] == classes[j]:
+                if array[i][-1] == classes[j]:
                     count[j] += 1
 
         for i in range (len(q)):
             q[i] = count[i]/n
 
-        self.f(array, count, classes, q)
+        self.f(array, count, classes, q, att_values)
 
-    def f(self, array, count, classes, q):
+    def f(self, array, count, classes, q, att_values):
         attribute = np.zeros((len(count), (len(array[0]) - 1)))
         for i in range(len(array)):
-            for j in range(len(array[0]) - 1):           #fix j range so first value isnt included ex the class column
-                if array[i][j + 1] == 'y':                  #change this +1 so that it works if class is at end
+            for j in range(len(array[0])):
+                if array[i][j] == att_values[0]:
                     for k in range(len(classes)):
-                        if array[i][0] == classes[k]:
+                        if array[i][-1] == classes[k]:
                             attribute[k][j] += 1
         for i in range(len(attribute)):
             for j in range(len(attribute[0])):
