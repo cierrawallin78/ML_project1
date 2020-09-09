@@ -1,0 +1,80 @@
+import numpy as np
+
+
+class Calculations:
+     
+    def __init__(self, train, test, classes, att_values, results):
+        self.results = results
+        self.train = train
+        self.test = test
+    
+      
+    
+    def q(self, train, test, classes, att_values, results):
+        count = [0] * len(classes)
+        q = [0] * len(classes)
+        n = len(train)
+        for i in range(n):
+            for j in range(len(classes)):
+                if train[i][-1] == classes[j]:
+                    count[j] += 1
+
+        for i in range (len(q)):
+            q[i] = count[i]/n
+
+        self.f(train, test, count, classes, q, att_values, results)
+
+    def f(self, train, test, count, classes, q, att_values, results):
+        attribute = np.zeros((2, len(count), (len(train[0]) - 1)))
+        for i in range(len(train)):
+            for j in range(len(train[0])):
+                if train[i][j] == att_values[0]:
+                    for k in range(len(classes)):
+                        if train[i][-1] == classes[k]:
+                            attribute[0][k][j] += 1
+                elif train[i][j] == att_values[1]:
+                    for k in range(len(classes)):
+                        if train[i][-1] == classes[k]:
+                            attribute[1][k][j] += 1
+        for i in range(len(attribute)):
+            for j in range(len(attribute[0])):
+                for k in range(len(attribute[0][0])):
+                    attribute[i][j][k] += 1
+                    attribute[i][j][k] /= (count[i] + (len(train[0]) - 1))
+        self.classify(attribute, test, q, classes, att_values, results)
+
+    def classify(self, attribute, test, q, classes, att_values, results):
+        product = np.ones((len(test), len(classes)))
+   
+        incorrect = 0
+        correct = 0 
+        for i in range(len(test)):
+            for j in range(len(classes)):
+                for k in range(len(attribute)):
+                    if test[i][j] == att_values[0]:
+                        product[i][j] *= attribute[0][j][k]
+                    elif test[i][j] == att_values[1]:
+                        product[i][j] *= attribute[1][j][k]
+        for i in range(len(product)):
+            for j in range(len(product[0])):
+                product[i][j] *= q[j]
+        for i in range(len(product)):
+            index = np.argmax(product[i])
+            if (classes[index] == test[i][-1]):
+                correct +=1
+            if (classes[index] != test[i][-1]):
+                incorrect +=1
+        results[0] += correct
+        results[1] +=incorrect
+
+    def getResult(self):
+        return self.results
+         
+        #print("correct", correct)
+        #print("incorrect", incorrect)
+            #print(test[i][-1])
+        #result.incorrect = result.incorrect + incorrect
+        #result.correct = result.correct + correct
+
+  
+
