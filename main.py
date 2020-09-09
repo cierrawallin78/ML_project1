@@ -20,19 +20,35 @@ class Reader:
             att_values.remove('?')
 
         if (len(att_values)) > 2:
-            pass                    #working here on discretizing
+            array = self.discretize(array)
+            att_values = [1, 0]
 
         self.missing(array, att_values, classes)
 
-    def missing(self, array, att_values, classes):
+    def discretize(self, array):                    #change to how it was done in the notes
+        average = [0] * (len(array[0]) - 1)
+        for i in range(len(array[0]) - 1):
+            for j in range(len(array)):
+                average[i] += int(array[j][i])
+        for i in range(len(average)):
+            average[i] /= len(array)
+        for i in range(len(array[0]) - 1):
+            for j in range(len(array)):
+                if int(array[j][i]) > average[i]:
+                    array[j][i] = 1
+                else:
+                    array[j][i] = 0
+        return array
 
+
+    def missing(self, array, att_values, classes):
         for i in range(len(array)):
             for j in range(len(array[0])):
                 if array[i][j] == "?":
                     decision = random.choice(att_values)
                     array[i][j] = decision
         print('as given')
-        Calculations.Calculations(array, classes, att_values)
+        self.cross_validation(array, classes, att_values)
         self.shuffle(array, classes, att_values)
 
 
@@ -46,6 +62,17 @@ class Reader:
             shuffle = random.randint(0, len(array[0]) - 1)
             np.random.shuffle(array[:,shuffle])
 
+        self.cross_validation(array, classes, att_values)
+
+    def cross_validation(self, array, classes, att_values):
+        training = np.empty([10, len(array), len(array[0])])
+        print(training)
+        np.random.shuffle(array)
+        for i in range(int(len(array)/10)):
+            for j in range(len(array[0])):
+                training[k][i][j].insert(array[i][j])
+        print(training[0])
+
         Calculations.Calculations(array, classes, att_values)
 
     def __init__(self, fname, class_pos):
@@ -53,7 +80,6 @@ class Reader:
         array = np.array([line.strip('\n').split(',') for line in file.readlines()])
         if class_pos != -1:
             array = np.flip(array, 1)
-            class_pos = -1
         self.get_values(array)
 
 def main():

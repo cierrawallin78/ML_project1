@@ -22,7 +22,7 @@ class Calculations:
         attribute = np.zeros((len(count), (len(array[0]) - 1)))
         for i in range(len(array)):
             for j in range(len(array[0])):
-                if array[i][j] == att_values[0]:
+                if array[i][j] == att_values[0]:        #change here
                     for k in range(len(classes)):
                         if array[i][-1] == classes[k]:
                             attribute[k][j] += 1
@@ -39,6 +39,5 @@ class Calculations:
                 product[i] *= attribute[i][j]
         for i in range(len(product)):
             product[i] *= q[i]
-        print(product)
         index = product.index(max(product))
         print(classes[index])
