@@ -1,24 +1,24 @@
 import numpy as np
 
 class Calculations:
-    def __init__(self, array, classes, att_values):
-        self.q(array, classes, att_values)
+    def __init__(self, train, test, classes, att_values):
+        self.q(train, test, classes, att_values)
 
-    def q(self, array, classes, att_values):
+    def q(self, train, test, classes, att_values):
         count = [0] * len(classes)
         q = [0] * len(classes)
-        n = len(array)
+        n = len(train)
         for i in range(n):
             for j in range(len(classes)):
-                if array[i][-1] == classes[j]:
+                if train[i][-1] == classes[j]:
                     count[j] += 1
 
         for i in range (len(q)):
             q[i] = count[i]/n
 
-        self.f(array, count, classes, q, att_values)
+        self.f(train, test, count, classes, q, att_values)
 
-    def f(self, array, count, classes, q, att_values):
+    def f(self, train, test, count, classes, q, att_values):
         attribute = np.zeros((len(count), (len(array[0]) - 1)))
         for i in range(len(array)):
             for j in range(len(array[0])):
